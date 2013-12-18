@@ -1,0 +1,9 @@
+c:\users\twistie\documents\visual studio 2013\Projects\CodePuzzle6\CodePuzzle6\bin\Debug\CodePuzzle6.exe.config
+c:\users\twistie\documents\visual studio 2013\Projects\CodePuzzle6\CodePuzzle6\bin\Debug\CodePuzzle6.exe
+c:\users\twistie\documents\visual studio 2013\Projects\CodePuzzle6\CodePuzzle6\bin\Debug\CodePuzzle6.pdb
+c:\users\twistie\documents\visual studio 2013\Projects\CodePuzzle6\CodePuzzle6\obj\Debug\CodePuzzle6.csprojResolveAssemblyReference.cache
+c:\users\twistie\documents\visual studio 2013\Projects\CodePuzzle6\CodePuzzle6\obj\Debug\CodePuzzle6.Form1.resources
+c:\users\twistie\documents\visual studio 2013\Projects\CodePuzzle6\CodePuzzle6\obj\Debug\CodePuzzle6.Properties.Resources.resources
+c:\users\twistie\documents\visual studio 2013\Projects\CodePuzzle6\CodePuzzle6\obj\Debug\CodePuzzle6.csproj.GenerateResource.Cache
+c:\users\twistie\documents\visual studio 2013\Projects\CodePuzzle6\CodePuzzle6\obj\Debug\CodePuzzle6.exe
+c:\users\twistie\documents\visual studio 2013\Projects\CodePuzzle6\CodePuzzle6\obj\Debug\CodePuzzle6.pdb
