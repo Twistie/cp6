@@ -16,12 +16,14 @@ namespace CodePuzzle6
         public List<Turn> turnList {get; set;}
         private Font font;
         private char letter;
-        private Brush brush, transBrush;
+        public Brush brush, transBrush;
         private int curTurn = 0;
         public float fitness {get; set;}
         private Random rand;
         private Color colour;
         private Queue<Rectangle> prevSquares;
+        public bool showRoute { get; set; }
+
         public class Turn {
 
             public int direction { get; set; }
@@ -36,6 +38,7 @@ namespace CodePuzzle6
         }
         public BasicActor(int x, int y, int toX, int toY, int turnLimit, char letter, PuzzleMap pMap, Color colour, Random rand )
         {
+            showRoute = false;
             prevSquares = new Queue<Rectangle>();
             this.startX = x;
             this.startY = y;
@@ -121,9 +124,13 @@ namespace CodePuzzle6
         }
         public void setPosition(int x, int y)
         {
-            prevSquares.Enqueue(new Rectangle(new Point(position().X * pMap.gridSize + pMap.xOffset, position().Y * pMap.gridSize + pMap.yOffset), new System.Drawing.Size(pMap.gridSize, pMap.gridSize)));
-            if (prevSquares.Count > 50)
-                prevSquares.Dequeue();
+            if (showRoute)
+            {
+                prevSquares.Enqueue(new Rectangle(new Point(position().X * pMap.gridSize + pMap.xOffset, position().Y * pMap.gridSize + pMap.yOffset), new System.Drawing.Size(pMap.gridSize, pMap.gridSize)));
+
+                if (prevSquares.Count > 50)
+                    prevSquares.Dequeue();
+            }
             this.x = x;
             this.y = y;
         }

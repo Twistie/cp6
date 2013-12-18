@@ -26,7 +26,7 @@ namespace CodePuzzle6
 
         public PuzzleMap(int sizeX, int sizeY, int gridSize)
         {
-            this.pen = new Pen(new SolidBrush(Color.White), 1);
+            this.pen = new Pen(new SolidBrush(Color.LightGray), 1);
             xOffset = 20;
             yOffset = 20;
             int curX = xOffset;
@@ -96,19 +96,19 @@ namespace CodePuzzle6
             else if (i % 3 == 0)
                 xDiff = 1;
 
-            map[actor.position().X, actor.position().Y].Remove(actor);
+            
 
             int newX, newY;
             newX = Math.Min(Math.Max(0, actor.position().X + xDiff), xSize - 1);
             newY = Math.Min(Math.Max(0, actor.position().Y + yDiff), ySize - 1);
             actor.setPosition(newX,newY );
 
-            map[newX, newY].AddLast(actor);
+            
         }
 
         public void addActor(IActor actor, int x, int y)
         {
-            map[x, y].AddLast(actor);
+            //map[x, y].AddLast(actor);
         }
 
         public void draw(PaintEventArgs e)

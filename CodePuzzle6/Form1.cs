@@ -230,6 +230,11 @@ namespace CodePuzzle6
         private List<BasicActor> breedList(List<BasicActor> old)
         {
             List<BasicActor> ret = new List<BasicActor>();
+            foreach (BasicActor a in old)
+            {
+                a.brush.Dispose();
+                a.transBrush.Dispose();
+            }
             for (int i = 0; i < GENERATION_SIZE / 10; i++)
             {
                 for (int n = 0; n < GENERATION_SIZE / 10; n++)
