@@ -15,5 +15,7 @@ namespace CodePuzzle6
         Point position();
         void setPosition(int x, int y);
         void finishGeneration();
+
+        float fitness { get; set; }
     }
 }

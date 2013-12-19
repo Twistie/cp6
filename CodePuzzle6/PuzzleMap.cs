@@ -101,6 +101,8 @@ namespace CodePuzzle6
             int newX, newY;
             newX = Math.Min(Math.Max(0, actor.position().X + xDiff), xSize - 1);
             newY = Math.Min(Math.Max(0, actor.position().Y + yDiff), ySize - 1);
+            //if (newX != actor.position().X + xDiff || newY != actor.position().Y + yDiff)
+            //    actor.fitness *= 1.1f;
             actor.setPosition(newX,newY );
 
             

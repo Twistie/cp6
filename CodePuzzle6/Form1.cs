@@ -16,7 +16,7 @@ namespace CodePuzzle6
         public PuzzleMap pMap {set; get;}
         private BasicActor actor;
         private static int GENERATION_SIZE = 50;
-        private static int TURN_LIMIT = 400;
+        private static int TURN_LIMIT = 600;
         private List<List<BasicActor>> actorLists = new List<List<BasicActor>>();
         private List<BasicActor> drawList = new List<BasicActor>();
         private Random rand;
@@ -24,6 +24,7 @@ namespace CodePuzzle6
 
         public Form1(PuzzleMap pMap, BasicActor topActor)
         {
+            DoubleBuffered = true;
             this.pMap = pMap;
             actor = topActor;
             InitializeComponent();
@@ -33,7 +34,7 @@ namespace CodePuzzle6
 
         private int curStartPosition = 0;
         private int startRow = 5;
-        private int toRow = 25;
+        private int toRow = 35;
         private int startOffset = 5;
         private Color[] rainbowBitches;
         private void initialize()
@@ -201,10 +202,7 @@ namespace CodePuzzle6
                 {
 
                     newGen.Add(breedList(aList));
-                    foreach (BasicActor b in newGen.Last())
-                    {
-                        b.finishGeneration();
-                    }
+                    Parallel.ForEach(newGen.Last(), b => b.finishGeneration());
                 }
                 
                 actorLists = newGen;
@@ -235,13 +233,20 @@ namespace CodePuzzle6
                 a.brush.Dispose();
                 a.transBrush.Dispose();
             }
-            for (int i = 0; i < GENERATION_SIZE / 10; i++)
+            for (int i = 0; i < GENERATION_SIZE / 7; i++)
             {
-                for (int n = 0; n < GENERATION_SIZE / 10; n++)
+                for (int n = 0; n < GENERATION_SIZE / 8; n++)
                 {
                     ret.Add(((BasicActor)old.ElementAt(i)).breed(old.ElementAt(n)));
                 }
             }
+
+            ret.Add(((BasicActor)old.ElementAt(0)).breedNoMut(old.ElementAt(0)));
+            //for (int i = 0; i < 9; i++) 
+            //    ret.Add(((BasicActor)old.ElementAt(0)).breed(old.ElementAt(i)));
+
+            //for (int i = 0; i < 5; i++)
+            //    ret.Add(((BasicActor)old.ElementAt(0)).newActor());
             return ret;
         }
     }

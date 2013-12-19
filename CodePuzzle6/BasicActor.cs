@@ -18,10 +18,10 @@ namespace CodePuzzle6
         private char letter;
         public Brush brush, transBrush;
         private int curTurn = 0;
-        public float fitness {get; set;}
         private Random rand;
         private Color colour;
         private Queue<Rectangle> prevSquares;
+        public float fitness { get; set; }
         public bool showRoute { get; set; }
 
         public class Turn {
@@ -38,7 +38,7 @@ namespace CodePuzzle6
         }
         public BasicActor(int x, int y, int toX, int toY, int turnLimit, char letter, PuzzleMap pMap, Color colour, Random rand )
         {
-            showRoute = false;
+            showRoute = true;
             prevSquares = new Queue<Rectangle>();
             this.startX = x;
             this.startY = y;
@@ -63,7 +63,7 @@ namespace CodePuzzle6
 
             for (int i = 0; i < turnLimit; i++)
             {
-                turnList.Add(new Turn(rand.Next(8) + 1));
+                turnList.Add(new Turn(rand.Next(9)+1));
 
             }
         }
@@ -76,13 +76,14 @@ namespace CodePuzzle6
 
         public void tick()
         {
+            fitness = fitness * 1.01f;
             float curDist = curDistance();
             if( curDist != 0)
                 pMap.moveActor(this, turnList[curTurn].direction);
             
             curDist = curDistance();
             if (curDist == 0)
-                fitness += 1;
+                fitness += 100;
             else
                 fitness -= curDist;
 
@@ -90,7 +91,14 @@ namespace CodePuzzle6
             curTurn++;
             if (curTurn == turnList.Capacity)
                 if (curDist == 0)
-                    fitness += 5000;
+                    fitness += 10000000;
+        }
+        public BasicActor newActor()
+        {
+
+            BasicActor ret = new BasicActor(startX, startY, toX, toY, turnLimit, letter, pMap, colour, rand);
+
+            return ret;
         }
 
         public BasicActor breed(IActor other)
@@ -107,14 +115,34 @@ namespace CodePuzzle6
                 else if(next < 1 - MUTATION_CHANCE )
                     newTurnList.Add(new Turn(b.turnList.ElementAt(i).direction ));
                 else
-                    newTurnList.Add(new Turn( rand.Next(8) + 1));
+                    newTurnList.Add(new Turn( rand.Next(9) + 1));
             }
             
             BasicActor ret = new BasicActor(startX,startY, toX, toY, turnLimit, letter, pMap, colour, rand );
             ret.turnList = newTurnList;
             return ret;
         }
-        
+
+        public BasicActor breedNoMut(IActor other)
+        {
+            BasicActor a = this;
+            BasicActor b = (BasicActor)other;
+            List<Turn> newTurnList = new List<Turn>(turnLimit);
+
+            for (int i = 0; i < turnLimit; i++)
+            {
+                float next = (float)rand.NextDouble();
+                if (next < (.5f))
+                    newTurnList.Add(new Turn(a.turnList.ElementAt(i).direction));
+                else 
+                    newTurnList.Add(new Turn(b.turnList.ElementAt(i).direction));
+            }
+
+            BasicActor ret = new BasicActor(startX, startY, toX, toY, turnLimit, letter, pMap, colour, rand);
+            ret.turnList = newTurnList;
+            return ret;
+        }
+
         public void draw(PaintEventArgs e)
         {
             foreach( Rectangle r in prevSquares) {
@@ -141,7 +169,7 @@ namespace CodePuzzle6
 
         public float curDistance()
         {
-            return Math.Abs(x - toX) + Math.Abs(y - toY);
+            return Math.Abs(x - toX) + Math.Abs(y - toY)*2.5f;
         }
         public int CompareTo(BasicActor other)
         {
