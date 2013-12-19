@@ -16,3 +16,4 @@ C:\Users\Twistie\Documents\Visual Studio 2013\Projects\CodePuzzle6\cp6\CodePuzzl
 C:\Users\Twistie\Documents\Visual Studio 2013\Projects\CodePuzzle6\cp6\CodePuzzle6\obj\Debug\CodePuzzle6.Form1.resources
 C:\Users\Twistie\Documents\Visual Studio 2013\Projects\CodePuzzle6\cp6\CodePuzzle6\obj\Debug\CodePuzzle6.Properties.Resources.resources
 C:\Users\Twistie\Documents\Visual Studio 2013\Projects\CodePuzzle6\cp6\CodePuzzle6\obj\Debug\CodePuzzle6.csproj.GenerateResource.Cache
+C:\Users\Twistie\Documents\Visual Studio 2013\Projects\CodePuzzle6\cp6\CodePuzzle6\obj\Debug\CodePuzzle6.SettingsForm.resources

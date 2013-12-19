@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -20,10 +21,11 @@ namespace CodePuzzle6
         private List<List<BasicActor>> actorLists = new List<List<BasicActor>>();
         private List<BasicActor> drawList = new List<BasicActor>();
         private Random rand;
-
+        public SettingsForm sForm;
 
         public Form1(PuzzleMap pMap, BasicActor topActor)
         {
+            sForm = new SettingsForm();
             DoubleBuffered = true;
             this.pMap = pMap;
             actor = topActor;
@@ -176,7 +178,6 @@ namespace CodePuzzle6
                 BasicActor a = (BasicActor)drawList.ElementAt(i);
                 status = status + "Fitness: " + a.fitness + ", X: " + a.position().X + ", Y: " + a.position().Y + "\n";
             }
-                this.statusText.Text = status;
         }
 
         private List<BasicActor> breed(List<BasicActor> old)
@@ -192,8 +193,18 @@ namespace CodePuzzle6
             return ret;
         }
 
+        Thread oThread;
+
         private void doGeneration_Click(object sender, EventArgs e)
         {
+            oThread = new Thread(new ThreadStart(doGen));
+            oThread.Start();
+            button1.Hide();
+        }
+
+        private void doGen()
+        {
+            delegateSetRepeatBox( false);
             do
             {
                 List<List<BasicActor>> newGen = new List<List<BasicActor>>();
@@ -204,13 +215,54 @@ namespace CodePuzzle6
                     newGen.Add(breedList(aList));
                     Parallel.ForEach(newGen.Last(), b => b.finishGeneration());
                 }
-                
+
                 actorLists = newGen;
                 DrawBestOfEveryChar();
 
-                this.Refresh();
+                this.delegateRefresh();
             } while (repeatBox.Checked);
 
+            delegateSetRepeatBox(true);
+        }
+
+        private void delegateSetRepeatBox(bool to)
+        {
+            if (this.InvokeRequired)
+            {
+                try
+                {
+                    doGeneration.Invoke(new MethodInvoker(delegate { doGeneration.Enabled = to; }));
+                }
+                catch (Exception e)
+                {
+                    //could happen when the thread is running and the program is closed
+                }
+
+                return;
+
+            }
+
+            this.Refresh();
+        }
+
+        private void delegateRefresh()
+        {
+            if (this.InvokeRequired)
+            {
+                try
+                {
+                    this.Invoke(new MethodInvoker(delegateRefresh));
+                }
+                catch (Exception e)
+                {
+                    //could happen when the thread is running and the program is closed
+                }
+                
+                return;
+                
+            }
+
+            this.Refresh();
         }
         private void DrawBestOfEveryChar()
         {
@@ -225,29 +277,40 @@ namespace CodePuzzle6
         {
             drawList = breed(drawList);
         }
+        
         private List<BasicActor> breedList(List<BasicActor> old)
         {
             List<BasicActor> ret = new List<BasicActor>();
             foreach (BasicActor a in old)
             {
+                a.brushDestroyed = true;
                 a.brush.Dispose();
                 a.transBrush.Dispose();
             }
-            for (int i = 0; i < GENERATION_SIZE / 7; i++)
+            for (int i = 0; i <  sForm.loopOuter.Value; i++)
             {
-                for (int n = 0; n < GENERATION_SIZE / 8; n++)
+                for (int n = 0; n < sForm.loopInner.Value; n++)
                 {
                     ret.Add(((BasicActor)old.ElementAt(i)).breed(old.ElementAt(n)));
                 }
             }
+            if( sForm.keepTop.Checked )
+                ret.Add(((BasicActor)old.ElementAt(0)).breedNoMut(old.ElementAt(0)));
 
-            ret.Add(((BasicActor)old.ElementAt(0)).breedNoMut(old.ElementAt(0)));
-            //for (int i = 0; i < 9; i++) 
-            //    ret.Add(((BasicActor)old.ElementAt(0)).breed(old.ElementAt(i)));
+            for (int i = 0; i < sForm.additionallyTop.Value ; i++) 
+                ret.Add(((BasicActor)old.ElementAt(0)).breed(old.ElementAt(i)));
 
-            //for (int i = 0; i < 5; i++)
-            //    ret.Add(((BasicActor)old.ElementAt(0)).newActor());
             return ret;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            sForm.ShowDialog();
+        }
+
+        private void onClose(object sender, FormClosedEventArgs e)
+        {
+            repeatBox.Checked = false;
         }
     }
 }

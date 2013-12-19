@@ -23,7 +23,7 @@ namespace CodePuzzle6
         private Queue<Rectangle> prevSquares;
         public float fitness { get; set; }
         public bool showRoute { get; set; }
-
+        public bool brushDestroyed { get; set; }
         public class Turn {
 
             public int direction { get; set; }
@@ -38,6 +38,7 @@ namespace CodePuzzle6
         }
         public BasicActor(int x, int y, int toX, int toY, int turnLimit, char letter, PuzzleMap pMap, Color colour, Random rand )
         {
+            brushDestroyed = false;
             showRoute = true;
             prevSquares = new Queue<Rectangle>();
             this.startX = x;
@@ -101,7 +102,7 @@ namespace CodePuzzle6
             return ret;
         }
 
-        public BasicActor breed(IActor other)
+        public BasicActor breed(IActor other, float mutChance)
         {
             BasicActor a = this;
             BasicActor b = (BasicActor)other;
@@ -110,17 +111,22 @@ namespace CodePuzzle6
             for (int i = 0; i < turnLimit; i++)
             {
                 float next = (float)rand.NextDouble();
-                if(next < (1 - MUTATION_CHANCE / 2 ))
-                    newTurnList.Add(new Turn( a.turnList.ElementAt(i).direction));
-                else if(next < 1 - MUTATION_CHANCE )
-                    newTurnList.Add(new Turn(b.turnList.ElementAt(i).direction ));
+                if (next < (1 - mutChance / 2))
+                    newTurnList.Add(new Turn(a.turnList.ElementAt(i).direction));
+                else if (next < 1 - mutChance)
+                    newTurnList.Add(new Turn(b.turnList.ElementAt(i).direction));
                 else
-                    newTurnList.Add(new Turn( rand.Next(9) + 1));
+                    newTurnList.Add(new Turn(rand.Next(9) + 1));
             }
-            
-            BasicActor ret = new BasicActor(startX,startY, toX, toY, turnLimit, letter, pMap, colour, rand );
+
+            BasicActor ret = new BasicActor(startX, startY, toX, toY, turnLimit, letter, pMap, colour, rand);
             ret.turnList = newTurnList;
             return ret;
+        }
+
+        public BasicActor breed(IActor other)
+        {
+            return breed(other, MUTATION_CHANCE);
         }
 
         public BasicActor breedNoMut(IActor other)
@@ -145,7 +151,10 @@ namespace CodePuzzle6
 
         public void draw(PaintEventArgs e)
         {
+            
             foreach( Rectangle r in prevSquares) {
+                if (brushDestroyed)
+                    return;
                 e.Graphics.FillRectangle(transBrush, r);
             }
             e.Graphics.DrawString(letter.ToString(), font, brush, new PointF(position().X * pMap.gridSize + pMap.xOffset, position().Y * pMap.gridSize + pMap.yOffset));
